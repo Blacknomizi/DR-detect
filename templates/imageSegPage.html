@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dr Check Area</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- bootstrap-css -->
+<link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<!--// bootstrap-css -->
+<!-- css -->
+<link rel="stylesheet" href="../static/css/style.css" type="text/css" media="all" />
+<!--// css -->
+<!-- font-awesome icons -->
+<link href="../static/css/font-awesome.css" rel="stylesheet">
+<!-- //font-awesome icons -->
+<!-- gallery -->
+<link href='../static/css/simplelightbox.min.css' rel='stylesheet' type='text/css'>
+<!-- //gallery -->
+<!-- font -->
+<link href='#css?family=Oswald:400,700,300' rel='stylesheet' type='text/css'>
+<link href='#css?family=Pacifico' rel='stylesheet' type='text/css'>
+<!-- //font -->
+<script src="../static/js/jquery-1.11.1.min.js"></script>
+<script src="../static/js/bootstrap.js"></script>
+<!-- parallax -->
+<script src="../static/js/SmoothScroll.min.js"></script>
+<!-- //parallax -->
+<style>
+    .gallery {
+        display: flex;
+        justify-content: center;
+     }
+    {#.gallery > .box:first-child {#}
+    {#  margin-right: 200px;#}
+    {#}#}
+    .box {
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 10px 20px 15px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 425px;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .image-box, .results-box {
+      height: 300px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-size: cover;
+      background-position: center;
+    }
+    .arrowForSeg {
+        padding-top: 175px;
+        padding-left: 35px;
+        padding-right: 35px;
+    }
+    .controls, .metrics {
+      background-color: #fff;
+      padding: 15px;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+    button{
+      border: none;
+      padding: 10px 30px;
+      border-radius: 10px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover{
+        opacity: 0.9;
+        background-color: #005bc0;
+    }
+    .metrics {
+        border-top: 1px solid #eee;
+        height: 100%;
+    }
+
+
+    .custom-file-label {
+      display: block;
+      padding: 10px 30px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    .custom-file-label:hover {
+        opacity: 0.9;
+        background-color: #419445;
+    }
+
+    .custom-file-label, #drCheckButton {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .compare-image {
+        width: 165px;
+        height: auto;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+        transform-origin: bottom center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .compare-image:hover {
+        transform: scale(3);
+        z-index: 10;
+    }
+    }
+</style>
+</head>
+<body>
+	<!-- banner -->
+	<div class="banner about-bg">
+		<div class="top-banner about-top-banner">
+			<div class="container">
+				<div class="top-banner-left">
+					<ul>
+						<li><i class="fa fa-phone" aria-hidden="true"></i> +86 13438839416</li>
+						<li><a href="mailto:davidguwx@163.com"><i class="fa fa-envelope" aria-hidden="true"></i> davidguwx@163.com</a></li>
+					</ul>
+				</div>
+				<div class="top-banner-right">
+					<ul>
+						<li><a class="facebook" href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+						<li><a class="facebook" href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+						<li><a class="facebook" href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
+						<li><a class="facebook" href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+					</ul>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<div class="header">
+			<div class="container">
+				<div class="logo">
+					<h1>
+						<a href="/">Dr Detector</a>
+					</h1>
+				</div>
+				<div class="top-nav">
+					<nav class="navbar navbar-default">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">Menu
+							</button>
+						<!-- Collect the nav links, forms, and other content for toggling -->
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li><a href="/">Home</a></li>
+                                <li><a href="https://github.com/Blacknomizi/DR-detect" target="_blank">Codes</a></li>
+                                <li><a href="">About</a></li>
+								<div class="clearfix"> </div>
+							</ul>
+						</div>
+					</nav>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!-- //banner -->
+
+	<!-- a-about -->
+	<div class="a-grid">
+		<div class="container">
+			<div class="w3l-about-heading">
+				<h2>Fund image Checking</h2>
+				<p>Please insert clear fundus images for recognition. </p>
+                <p>The heat map and prediction results that this model focuses on will be presented on the right side. </p>
+                <p>Please note that the prediction results of this model cannot replace the opinion of a professional doctor. If you suspect that you have a lesion（Predicted Class is not 0）, please go to the nearest hospital for treatment as soon as possible</p>
+                <p>Result comparison (Class number - DR level):</p>
+                <p>0 - no DR, 1 - mild DR,2 - moderate DR, 3 - severe DR, 4 - proliferative DR</p>
+			</div>
+			<div class="gallery">
+                <div class="box">
+                  <div class="image-box" id="imageBox">
+                    <p>Upload Fund Image</p>
+                  </div>
+                  <div class="controls">
+                        <input type="file" id="uploadButton" accept="image/*" style="display: none;">
+                        <label id="uploadLabel" for="uploadButton" class="custom-file-label">Choose File</label>
+                        <button id="drCheckButton">Start Checking</button>
+                  </div>
+                </div>
+
+                <div class="arrowForSeg">
+                    <img src="../static/images/arrowForSeg.png" alt="arrow" height="200" width="200">
+                </div>
+
+                <div class="box">
+                  <div class="results-box" id="resultsBox">
+                    <p>Result heat map will be shown here</p>
+                  </div>
+
+                  <div id="metric" class="metrics">
+                    <p>Classification word based Result shown here</p>
+                  </div>
+                </div>
+
+                <script>
+                    document.getElementById('uploadButton').addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+
+                            reader.onload = function(event) {
+                                const imageBox = document.getElementById('imageBox');
+                                imageBox.innerHTML = '';
+
+                                const img = document.createElement('img');
+                                img.src = event.target.result;
+                                img.style.maxWidth = '100%';
+                                img.style.maxHeight = '100%';
+
+                                imageBox.appendChild(img);
+
+                                document.getElementById('uploadLabel').textContent = file.name;
+                            };
+
+                            reader.readAsDataURL(file);
+                        }
+                    });
+
+                    document.getElementById('drCheckButton').addEventListener('click', function() {
+                        const fileInput = document.getElementById('uploadButton');
+                        if (fileInput.files.length === 0) {
+                            alert('Please select an image first!');
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('file', fileInput.files[0]);
+
+                        fetch('/functions/startSeg', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message === 'File uploaded and processed') {
+                                // 显示处理结果
+                                const resultsBox = document.getElementById('resultsBox');
+                                resultsBox.innerHTML = '';
+
+                                const img = document.createElement('img');
+                                img.src = data.result_path;
+                                img.style.maxWidth = '100%';
+                                img.style.maxHeight = '100%';
+
+                                resultsBox.appendChild(img);
+
+                                const metric = document.getElementById('metric');
+                                let metricsHtml = '<p>Predicted Class: ' + data.predicted_class + '</p>';
+
+                                metricsHtml += '<p>Predicted Probabilities:</p>';
+
+                                data.predicted_probabilities.forEach((prob, index) => {
+                                    metricsHtml += '<p>Class ' + index + ': ' + (prob * 100).toFixed(2) + '%</p>';
+                                });
+
+                                metric.innerHTML = metricsHtml;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred during processing.');
+                        });
+                    });
+                </script>
+			</div>
+
+		</div>
+	</div>
+	<!-- //a-about -->
+	<!-- footer -->
+	<div class="footer">
+		<div class="container">
+			<div class="footer-grids">
+				<div class="col-md-3 footer-grid">
+					<div class="footer-grid-heading">
+						<h4>Address</h4>
+					</div>
+					<div class="footer-grid-info">
+						<p>CDUT
+							<span>No.1, East Third Road, Erxianqiao, Chenghua District, Chengdu, China</span>
+						</p>
+						<p class="phone">Phone : +86 13438839416
+							<span>Email : <a href="mailto:davidguwx@163.com">davidguwx@163.com</a></span>
+						</p>
+					</div>
+				</div>
+				<div class="col-md-3 footer-grid">
+					<div class="footer-grid-heading">
+						<h4>Navigation</h4>
+					</div>
+					<div class="footer-grid-info">
+						<ul>
+                            <li><a href="https://github.com/Blacknomizi/DR-detect" target="_blank">Codes</a></li>
+                            <li><a href="">About</a></li>
+						</ul>
+					</div>
+				</div>
+
+                <div class="col-md-3 footer-grid">
+					<div class="footer-grid-heading">
+						<h4>Special thanks</h4>
+					</div>
+					<div class="footer-grid-info">
+						<p>ChengDu university of Technology & Oxford Brookes University
+							<span>For Educational resources provided</span>
+						</p>
+                        <br>
+                        <p>Tutor: Grace
+							<span>For Technical guidance provided</span>
+						</p>
+					</div>
+				</div>
+
+				<div class="col-md-3 footer-grid">
+					<div class="footer-grid-heading">
+						<h4>Follow</h4>
+					</div>
+					<div class="social">
+						<ul>
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-rss"></i></a></li>
+							<li><a href="#"><i class="fa fa-vk"></i></a></li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="clearfix"> </div>
+			</div>
+			<div class="copyright">
+				<p>Copyright &copy; 2025 by David Gu All rights reserved.</p>
+			</div>
+		</div>
+	</div>
+	<!-- //footer -->
+</body>
+</html>
