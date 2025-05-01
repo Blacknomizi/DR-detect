@@ -9,7 +9,7 @@ from tensorflow.keras.models import Model
 WORKERS = 2
 CHANNEL = 3
 
-IMG_SIZE = 224  # 可根据实际模型输入调整
+IMG_SIZE = 224
 NUM_CLASSES = 5
 TRAIN_NUM = 1000 # use 1000 when you just want to explore new idea, use -1 for full train
 

@@ -17,14 +17,13 @@ UPLOAD_FOLDER = 'static/DLFile/upload_folder'
 OUTPUT_FOLDER = 'static/DLFile/output_folder'
 OUTPUT_FOLDER_FOR_VIDEO = 'static/DLFile/videoPic/outputFrames'
 
-# 全局模型变量
 model = None
 
 from static.DLFile.model import build_my_model
 
 
 def load_model(model_path):
-    """加载模型函数"""
+    """Load the model function"""
     global model
     model = build_my_model(img_size=224, num_classes=5)
     model.load_weights(model_path)
@@ -33,71 +32,70 @@ def load_model(model_path):
 
 def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
     """
-    创建Grad-CAM热力图，用于可视化模型关注的区域
+    Create the Grad-CAM heat map for visualizing the areas of concern of the model
 
-    参数:
-    img_array - 经过预处理的图像数组，形状为 (1, height, width, channels)
-    model - 训练好的模型
-    last_conv_layer_name - 最后一个卷积层的名称
-    pred_index - 要可视化的类别索引，如果为None，则使用模型预测的类别
+    Parameter:
+    img_array - A preprocessed image array with the shape of (1, height, width, channels)
+    model - A trained model
+    last_conv_layer_name - The name of the last convolutional layer
+    pred_index - The category index to be visualized. If it is None, use the category predicted by the model
 
-    返回:
-    热力图数组，值范围在 [0, 1]
+    Return:
+    Heat map array, with values ranging from [0, 1]
     """
-    # 确保图像已正确归一化
+    # Make sure the image has been normalized correctly
     if img_array.max() > 1.0:
         img_array = img_array / 255.0
 
-    # 创建一个输出最后一个卷积层和预测结果的模型
+    # Create a model that outputs the last convolutional layer and the prediction results
     grad_model = tf.keras.models.Model(
         [model.inputs],
         [model.get_layer(last_conv_layer_name).output, model.output]
     )
 
-    # 记录梯度
+    # Record the gradient
     with tf.GradientTape() as tape:
-        # 计算最后一个卷积层的输出和模型预测
+        # Calculate the output of the last convolutional layer and the model prediction
         conv_outputs, predictions = grad_model(img_array)
 
-        # 如果未指定预测索引，使用概率最高的类别
+        # If no prediction index is specified, use the category with the highest probability
         if pred_index is None:
             pred_index = tf.argmax(predictions[0])
 
-        # 获取目标类别的输出
+        # Obtain the output of the target category
         class_channel = predictions[:, pred_index]
 
-    # 计算最后一个卷积层输出相对于目标类别的梯度
+    # Calculate the gradient of the output of the last convolutional layer relative to the target category
     grads = tape.gradient(class_channel, conv_outputs)
 
-    # 对梯度进行全局平均池化
+    # Perform global average pooling on the gradients
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
 
-    # 获取卷积层输出
+    # Obtain the output of the convolutional layer
     conv_outputs = conv_outputs[0]
 
-    # 将池化后的梯度与卷积层输出相乘，获取类激活图
-    # 使用维度扩展确保可以进行矩阵乘法
+    # Multiply the pooled gradient by the output of the convolutional layer to obtain the class activation graph
+    # Use dimension expansion to ensure that matrix multiplication can be performed
     heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
     heatmap = tf.squeeze(heatmap)
 
-    # 将热力图归一化到 [0, 1] 范围
+    # Normalize the heat map to the range of [0, 1]
     heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
 
     return heatmap.numpy()
 
 
-@bp.route('/imageSeg')
-def imageSegmentation():
-    """图像分割页面路由"""
-    # 加载模型
-    load_model("static/DLFile/my_model.h5")
-
-    # 打印模型层以进行调试
-    print("模型层:")
-    for i, layer in enumerate(model.layers):
-        print(f"{i}: {layer.name}")
-
-    return render_template("imageSegPage.html")
+# @bp.route('/imageSeg')
+# def imageSegmentation():
+#     """Image segmentation page routing"""
+#
+#     load_model("static/DLFile/my_model.h5")
+#
+#     print("Model layer:")
+#     for i, layer in enumerate(model.layers):
+#         print(f"{i}: {layer.name}")
+#
+#     return render_template("imageSegPage.html")
 
 
 
@@ -108,16 +106,16 @@ def startSegment():
     image_pil = Image.open(file.stream).convert('RGB')
     image_np = np.array(image_pil)
 
-    # ---------- 预处理部分 ----------
+    # ---------- Pretreatment section ----------
     def crop_single_channel(img, tol=7):
-        """处理单通道图像"""
+        """Process single-channel images"""
         mask = img > tol
         if not mask.any():
             return img
         return img[np.ix_(mask.any(1), mask.any(0))]
 
     def crop_image_from_gray(img, tol=7):
-        """基于灰度阈值裁剪图像"""
+        """Crop the image based on the gray threshold"""
         if img.ndim == 2:
             return crop_single_channel(img, tol)
         elif img.ndim == 3:
@@ -131,13 +129,13 @@ def startSegment():
             return cv2.merge(cropped_channels)
 
     def crop_image(img, tol=7):
-        """裁剪并调整大小以保持原始尺寸"""
+        """Cut and resize to maintain the original size"""
         h, w = img.shape[:2]
         cropped_img = crop_image_from_gray(img, tol)
         return cv2.resize(cropped_img, (w, h))
 
     def crop_image_with_contours(image, threshold=1):
-        """使用轮廓检测裁剪图像"""
+        """Crop the image using contour detection"""
         if len(image.shape) == 3:
             gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         else:
@@ -151,80 +149,74 @@ def startSegment():
             return image
 
     def universal_crop(image, method='gray', tol=7):
-        """根据输入参数选择裁剪方法"""
+        """Select the cropping method according to the input parameters"""
         if method == 'gray':
             return crop_image(image, tol)
         elif method == 'contours':
             return crop_image_with_contours(image)
         else:
-            raise ValueError(f"不支持的裁剪方法: {method}")
+            raise ValueError(f"Unsupported cropping methods: {method}")
 
     def load_ben_color(img, sigmaX=10):
-        """使用加权高斯模糊增强图像颜色"""
+        """Enhance the image color using weighted Gaussian blur"""
         if img is None:
             return None
-        img = cv2.addWeighted(img, 4, cv2.GaussianBlur(img, (0, 0), sigmaX), -4, 128)
+        img = cv2.addWeighted(img, 8, cv2.GaussianBlur(img, (0, 0), sigmaX), -8, 128)
         return img
 
-    # 应用预处理: 裁剪 + 增强 + 调整大小 + 归一化
-    print("开始预处理图像")
+    # Application preprocessing: cutting + enhancement + adjustment size + normalization
+    print("Start preprocessing the image")
     image_np = universal_crop(image_np, method='gray', tol=7)
     image_np = load_ben_color(image_np, sigmaX=10)
-    image_np = cv2.resize(image_np, (224, 224))  # 调整为模型输入尺寸
+    image_np = cv2.resize(image_np, (224, 224))
 
-    # 保存处理后的图像用于显示
+    # Save the processed image for display
     display_image = image_np.copy()
 
-    # 归一化用于模型输入
+    # Normalization is used for model input
     image_np = image_np.astype('float32') / 255.0
     image_input = np.expand_dims(image_np, axis=0)
 
-    # 获取模型预测
-    print("开始模型预测")
+    # Obtain model predictions
+    print("Start predicting")
     pred = model.predict(image_input)
     pred_class = np.argmax(pred, axis=-1)[0]
     pred_probabilities = pred[0].tolist()
-    print(f"预测类别: {pred_class}, 概率: {pred_probabilities}")
+    print(f"Predicted category: {pred_class}, probability: {pred_probabilities}")
 
-    # 打印模型的所有层以进行调试
-    print("模型所有层:")
+    # Print all layers of the model for debugging
+    print("All model layers:")
     for i, layer in enumerate(model.layers):
         print(f"{i}: {layer.name}")
 
     try:
-        print("生成热力图可视化")
+        print("Generate heat map visualization")
 
-        # 确保显示图像在0-255范围内
+        # Obtain the edge of the image
         if display_image.max() <= 1.0:
             display_image = (display_image * 255).astype('uint8')
 
-        # 获取图像边缘
+        # Obtain the edge of the image
         gray = cv2.cvtColor(display_image, cv2.COLOR_BGR2GRAY)
 
-        # 使用结构化滤波器增强图像结构
+        # Use structured filters to enhance the image structure
         kernel_size = 5
         kernel = np.ones((kernel_size, kernel_size), np.float32) / (kernel_size * kernel_size)
         filtered = cv2.filter2D(gray, -1, kernel)
 
-        # 对结构增强的图像使用自适应阈值
         thresh = cv2.adaptiveThreshold(filtered, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        cv2.THRESH_BINARY, 11, 2)
 
-        # 提取视网膜特征（血管、视盘等）
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20,
                                    param1=50, param2=30, minRadius=0, maxRadius=0)
 
-        # 创建特征热力图
         heatmap_base = np.zeros_like(gray)
 
-        # 添加边缘特征
         edges = cv2.Canny(gray, 30, 150)
         heatmap_base = cv2.add(heatmap_base, edges)
 
-        # 添加阈值特征
         heatmap_base = cv2.add(heatmap_base, thresh)
 
-        # 如果找到圆（可能是视盘），添加到热力图
         if circles is not None:
             circles = np.uint16(np.around(circles))
             for i in circles[0, :]:
