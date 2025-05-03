@@ -85,17 +85,17 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
     return heatmap.numpy()
 
 
-# @bp.route('/imageSeg')
-# def imageSegmentation():
-#     """Image segmentation page routing"""
-#
-#     load_model("static/DLFile/my_model.h5")
-#
-#     print("Model layer:")
-#     for i, layer in enumerate(model.layers):
-#         print(f"{i}: {layer.name}")
-#
-#     return render_template("imageSegPage.html")
+@bp.route('/Drcheck')
+def imageCheck():
+    """Image segmentation page routing"""
+
+    load_model("static/DLFile/my_model.h5")
+
+    print("Model layer:")
+    for i, layer in enumerate(model.layers):
+        print(f"{i}: {layer.name}")
+
+    return render_template("DRCheck.html")
 
 
 
