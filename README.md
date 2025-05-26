@@ -8,3 +8,6 @@ If you just want the GUI, plz download the file except "202118020326_FinalReport
 IMPORTANT:
 The prediction result of this model has not reached 100%, so it cannot replace the doctor's diagnosis result.
 If you suspect that you have DR, please be sure to go to the hospital for another confirmation
+
+
+PS: You need to create two folder which is namedas: output_folder and upload_folder at static\DLFile before runing this project
